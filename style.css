@@ -432,3 +432,4 @@ body.locked { overflow: hidden; }
 /* Save to calendar: label above the Google / Apple buttons */
 .cal-label { width: 100%; font-family: "Montserrat", sans-serif; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--wine); margin-bottom: 2px !important; }
 .cal-label .en { letter-spacing: .02em; font-size: 14px; }
+.cal-hint { width: 100%; font-size: 13px; font-style: italic; opacity: .8; margin-top: 2px !important; }

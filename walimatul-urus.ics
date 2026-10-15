@@ -3,6 +3,8 @@ VERSION:2.0
 PRODID:-//Kad Kahwin Damia & Irfan//MS
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
+X-WR-CALNAME:Walimatul Urus Damia & Irfan
+X-WR-TIMEZONE:Asia/Kuala_Lumpur
 BEGIN:VEVENT
 UID:walimatul-2026-12-20-damia-irfan@irfannabil00.github.io
 DTSTAMP:20261016T000000Z

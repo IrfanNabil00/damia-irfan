@@ -78,6 +78,16 @@
     `&dates=${gcal(eventStart)}/${gcal(eventEnd)}` +
     `&location=${encodeURIComponent(`${C.venueName}, ${C.venueAddress.join(" ")}`)}`;
 
+  // iPhone/iPad: Safari often just downloads a .ics file, but a webcal:// link is
+  // always handed to the Calendar app (it asks to "Subscribe" to this one event).
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (isIOS) {
+    const ics = new URL("walimatul-urus.ics", location.href);
+    $("#icsBtn").href = `webcal://${ics.host}${ics.pathname}`;
+    $("#icsHint").hidden = false;
+  }
+
   $("#rsvpDeadline").textContent = fmtLong(C.rsvpDeadline);
   const dl = new Date(`${C.rsvpDeadline}T12:00:00+08:00`);
   $("#rsvpDeadlineEn").textContent = `${dl.getUTCDate()} ${MONTHS_EN[dl.getUTCMonth()]} ${dl.getUTCFullYear()}`;
