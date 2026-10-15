@@ -47,10 +47,10 @@ window.CONFIG = {
   slots: ["11:00 AM - 2:00 PM", "2:00 PM - 4:00 PM"],
 
   // Contacts — phone in international format, no + or spaces (6012... not 012...).
-  // Each contact gets a Call button and a WhatsApp button.
+  // Each contact gets a Call button and a WhatsApp button. Use \n in role for a line break.
   contacts: [
-    { name: "Linda Aris", role: "Ibu Pengantin", phone: "60123456789" },
-    { name: "Zazlina", role: "Kakak Pengantin", phone: "60198765432" },
+    { name: "Linda Aris", role: "Ibu Pengantin\nLelaki", phone: "60192676282" },
+    { name: "Zazlina", role: "Kakak Pengantin\nPerempuan", phone: "60192775508" },
   ],
 
   // Gifts (Hadiah) — money gift via QR / bank transfer, plus a wishlist.
