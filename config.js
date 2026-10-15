@@ -53,6 +53,15 @@ window.CONFIG = {
     { name: "Zazlina", role: "Kakak Pengantin\nPerempuan", phone: "60192775508" },
   ],
 
+  // Photo gallery — 9 photos shown in the painted frames, saved as
+  // site/assets/gallery/1.jpg ... 9.jpg (order: left to right, top to bottom).
+  // The frames are 4:5, so 1080 x 1350 px fits best; taller photos (e.g.
+  // 1080 x 1920) are cropped in the frame but shown whole when tapped.
+  // Missing photos leave the frame empty.
+  // Set to [] to hide the gallery.
+  // HIDDEN for now — to show the gallery, delete "[], // " on the next line.
+  gallery: [], // [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `assets/gallery/${n}.jpg`),
+
   // Gifts (Hadiah) — money gift via QR / bank transfer, plus a wishlist.
   gift: {
     // Your DuitNow / bank QR image. Save it as site/assets/qr.png

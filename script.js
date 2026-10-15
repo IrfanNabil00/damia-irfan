@@ -102,6 +102,75 @@
     </div>`;
   }).join("");
 
+  // ---------- Gallery ----------
+  const photos = C.gallery || [];
+  if (!photos.length) {
+    $("#galeri").remove();
+    document.querySelector('.bottom-nav a[href="#galeri"]').remove();
+  } else {
+    const grid = $("#gallery");
+    const viewer = $("#viewer");
+    const vImg = viewer.querySelector(".viewer-img");
+    let shown = []; // photos that actually loaded
+    let current = 0;
+
+    // The 9 frame windows in assets/gallery-frame.webp (pixels in the 1333 x 2000 image).
+    const COLS = [[222, 488], [525, 790], [830, 1095]];
+    const ROWS = [[470, 807], [840, 1172], [1207, 1537]];
+    const pct = (v, total) => `${(v / total * 100).toFixed(2)}%`;
+    grid.innerHTML = photos.slice(0, 9).map((src, i) => {
+      const [x0, x1] = COLS[i % 3], [y0, y1] = ROWS[Math.floor(i / 3)];
+      const pos = `left:${pct(x0, 1333)};top:${pct(y0, 2000)};width:${pct(x1 - x0, 1333)};height:${pct(y1 - y0, 2000)}`;
+      return `<button type="button" data-i="${i}" style="${pos}" aria-label="Lihat foto ${i + 1}"><img src="${esc(src)}" alt="Foto ${i + 1}" loading="lazy"></button>`;
+    }).join("");
+    grid.querySelectorAll("img").forEach((img, i) => {
+      img.addEventListener("error", () => {
+        const b = img.parentElement;
+        b.classList.add("missing");
+        b.disabled = true;
+        b.textContent = `Foto ${i + 1}`;
+      });
+    });
+
+    const show = (n) => {
+      current = (n + shown.length) % shown.length;
+      vImg.src = shown[current];
+      vImg.alt = `Foto ${current + 1}`;
+      viewer.querySelector(".viewer-count").textContent = `${current + 1} / ${shown.length}`;
+    };
+    const open = (src) => {
+      shown = [...grid.querySelectorAll("button:not(.missing) img")].map((im) => im.getAttribute("src"));
+      viewer.hidden = false;
+      document.body.classList.add("locked");
+      show(shown.indexOf(src));
+    };
+    const close = () => { viewer.hidden = true; document.body.classList.remove("locked"); };
+
+    grid.addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (b && !b.classList.contains("missing")) open(b.querySelector("img").getAttribute("src"));
+    });
+    viewer.querySelector(".viewer-close").addEventListener("click", close);
+    viewer.querySelector(".prev").addEventListener("click", () => show(current - 1));
+    viewer.querySelector(".next").addEventListener("click", () => show(current + 1));
+    viewer.addEventListener("click", (e) => { if (e.target === viewer) close(); });
+    document.addEventListener("keydown", (e) => {
+      if (viewer.hidden) return;
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowLeft") show(current - 1);
+      if (e.key === "ArrowRight") show(current + 1);
+    });
+    // Swipe left / right on phones
+    let x0 = null;
+    viewer.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    viewer.addEventListener("touchend", (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+  }
+
   // ---------- Gifts ----------
   const G = C.gift;
   if (!G) {

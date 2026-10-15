@@ -108,6 +108,7 @@ body.locked { overflow: hidden; }
   text-align: center;
   color: var(--gold-soft);
 }
+.monogram { width: 64px; height: 64px; margin-bottom: 10px; }
 .frame .names { font-size: 46px; line-height: .95; margin: 14px 0 18px; color: var(--cream); }
 .frame .names span { display: block; }
 .frame .names .amp { font-size: 30px; color: var(--gold); }
@@ -232,6 +233,49 @@ body.locked { overflow: hidden; }
 /* RSVP, Ucapan and Hadiah text a little larger than the rest */
 #rsvp > p:not(.title), #hadiah > p:not(.title), .wish p:first-child { font-size: 18px; }
 .wish .who { font-family: "Montserrat", sans-serif; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--wine); margin-top: 4px !important; }
+
+/* Gallery: photos sit behind the painted frame (assets/gallery-frame.webp),
+   whose 9 windows are transparent. Positions are set in script.js. */
+.gallery-panel {
+  position: relative;
+  aspect-ratio: 1333 / 2000;
+  background: #500a0b;  /* same red as the empty frames */
+  overflow: hidden;
+}
+.gallery-frame { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.gallery-title {
+  position: absolute; z-index: 3; left: 0; right: 0; top: 14.5%;
+  text-align: center; font-size: 44px; line-height: 1; color: var(--cream);
+}
+.gallery button {
+  position: absolute; z-index: 1; padding: 0; border: 0; background: none; overflow: hidden; cursor: zoom-in;
+}
+.gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery .missing {
+  display: grid; place-items: center; cursor: default;
+  font-family: "Montserrat", sans-serif; font-size: 9px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--gold-soft); opacity: .45;
+}
+
+/* Full-screen photo viewer */
+.viewer {
+  position: fixed; inset: 0; z-index: 60; background: rgba(15,6,7,.94);
+  display: flex; align-items: center; justify-content: center;
+}
+.viewer[hidden] { display: none; }
+.viewer-img { max-width: 92vw; max-height: 84svh; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+.viewer button {
+  position: absolute; border: 0; background: rgba(247,236,220,.12); color: var(--cream);
+  width: 44px; height: 44px; border-radius: 50%; font-size: 26px; line-height: 1; cursor: pointer;
+}
+.viewer button:hover { background: rgba(247,236,220,.25); }
+.viewer-close { top: 16px; right: 16px; font-size: 18px !important; }
+.viewer-nav.prev { left: 10px; top: 50%; transform: translateY(-50%); }
+.viewer-nav.next { right: 10px; top: 50%; transform: translateY(-50%); }
+.viewer-count {
+  position: absolute; bottom: calc(18px + env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center;
+  font-family: "Montserrat", sans-serif; font-size: 12px; letter-spacing: .2em; color: var(--gold-soft);
+}
 
 /* Gifts */
 .gift-box {
