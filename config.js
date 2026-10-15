@@ -76,7 +76,7 @@ window.CONFIG = {
 
   // Google Apps Script Web App URL (see README.md, step 2).
   // Leave empty to run in demo mode (data saved only in this browser).
-  scriptUrl: "",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbzbZRZRyaf72jKJ1MdKcUdiR4sjUOnYShgghKeVP0r63Jih9XV8X3_SohwMeO02Z304/exec",
 
   // Optional background music — put an mp3 at this path, or set to "".
   music: "assets/music.mp3",
