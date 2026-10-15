@@ -36,8 +36,8 @@ window.CONFIG = {
 
   // Programme (Atur Cara Majlis)
   schedule: [
-    { label: "Jamuan Makan", time: "11.00 pagi - 4.00 petang" },
-    { label: "Ketibaan Pengantin", time: "12.30 tengah hari" },
+    { label: "Jamuan Makan", labelEn: "Reception", time: "11.00 pagi - 4.00 petang", timeEn: "11.00 am – 4.00 pm" },
+    { label: "Ketibaan Pengantin", labelEn: "Arrival of the Bride & Groom", time: "12.30 tengah hari", timeEn: "12.30 pm" },
   ],
 
   // RSVP
@@ -49,8 +49,8 @@ window.CONFIG = {
   // Contacts — phone in international format, no + or spaces (6012... not 012...).
   // Each contact gets a Call button and a WhatsApp button. Use \n in role for a line break.
   contacts: [
-    { name: "Linda Aris", role: "Ibu Pengantin\nLelaki", phone: "60192676282" },
-    { name: "Zazlina", role: "Kakak Pengantin\nPerempuan", phone: "60192775508" },
+    { name: "Linda Aris", role: "Ibu Pengantin\nLelaki", roleEn: "Mother of the Groom", phone: "60192676282" },
+    { name: "Zazlina", role: "Kakak Pengantin\nPerempuan", roleEn: "Sister of the Bride", phone: "60192775508" },
   ],
 
   // Photo gallery — 9 photos shown in the painted frames, saved as
@@ -62,19 +62,23 @@ window.CONFIG = {
   // HIDDEN for now — to show the gallery, delete "[], // " on the next line.
   gallery: [], // [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `assets/gallery/${n}.jpg`),
 
-  // Gifts (Hadiah) — money gift via QR / bank transfer, plus a wishlist.
+  // Gifts (Hadiah) — wishlist checklist and delivery address.
   gift: {
-    // Your DuitNow / bank QR image. Save it as site/assets/qr.png
-    // (screenshot it from your banking app). Set to "" to hide.
-    qrImage: "assets/qr.png",
-    bankName: "Maybank",
-    accountName: "NUR KARTIKA DAMIA",
-    accountNumber: "1234 5678 9012",
-    // Wishlist items: name, optional note, and a Shopee (or any shop) link.
+    // Wishlist checklist: guests tick an item they will buy (anonymously),
+    // so nobody buys the same thing twice. Each item: name, optional note,
+    // and a Shopee (or any shop) link. Don't rename an item after guests have
+    // ticked it — the tick is saved against the name.
     wishlist: [
-      { name: "Air Fryer", note: "Philips 4.1L", link: "https://shopee.com.my/" },
-      { name: "Set Cadar King", note: "Warna krim / putih", link: "https://shopee.com.my/" },
-      { name: "Periuk Nasi", note: "Toshiba 1.8L", link: "https://shopee.com.my/" },
+      { name: "Set Peralatan Bosch 108-in-1", note: "Bosch Household Tool Kit", link: "https://shopee.com.my/BOSCH-108-In-1-Multi-Function-Household-Tool-Kit-2607002788-i.12851682.772468267?extraParams=%7B%22display_model_id%22%3A40352982774%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "TV PRISM Q55 Ultra 55 inci", note: "QLED 4K Google TV", link: "https://shopee.com.my/PRISM-Q55-Ultra-2026-Q-Ultra-Series-QLED-4K-AI-Google-TV-55-inch-TV-i.524628742.12499456780?extraParams=%7B%22display_model_id%22%3A59307755001%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Periuk Nasi", note: "Toshiba 5L Multi-Function", link: "https://shopee.com.my/TOSHIBA-5L-Multi-Function-Rice-Cooker-Easy-Cooking-Series-Non-Stick-Cooking-Pot-Mee-Pot-Cooker-Steamer-i.1177039009.45967833167?extraParams=%7B%22display_model_id%22%3A326508252084%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Cerek Elektrik", note: "1.7L", link: "https://shopee.com.my/" },
+      { name: "Pengisar (Blender)", note: "Panasonic", link: "https://shopee.com.my/" },
+      { name: "Set Pinggan Mangkuk", note: "Untuk 6 orang", link: "https://shopee.com.my/" },
+      { name: "Seterika Wap", note: "Philips", link: "https://shopee.com.my/" },
+      { name: "Penyedut Habuk", note: "Tanpa wayar", link: "https://shopee.com.my/" },
+      { name: "Set Tuala Mandi", note: "Warna krim", link: "https://shopee.com.my/" },
+      { name: "Mesin Kopi", note: "Kapsul", link: "https://shopee.com.my/" },
     ],
     // Address for wishlist deliveries (shown so guests can ship gifts directly).
     // Set to "" to hide.

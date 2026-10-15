@@ -108,7 +108,11 @@ body.locked { overflow: hidden; }
   text-align: center;
   color: var(--gold-soft);
 }
-.monogram { width: 64px; height: 64px; margin-bottom: 10px; }
+.monogram-slot { position: relative; width: 100%; height: 74px; }  /* same space the old logo took */
+.monogram {
+  position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);  /* raise: increase bottom */
+  width: 86px; height: auto;
+}
 .frame .names { font-size: 46px; line-height: .95; margin: 14px 0 18px; color: var(--cream); }
 .frame .names span { display: block; }
 .frame .names .amp { font-size: 30px; color: var(--gold); }
@@ -121,10 +125,11 @@ body.locked { overflow: hidden; }
   padding: 56px 28px;
   position: relative;
 }
-.panel + .panel::before {
-  content: "\2766\FE0E";
-  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
-  color: var(--gold); font-family: Georgia, serif; font-size: 22px; padding: 0 10px;
+.panel + .panel::before {  /* section divider: your D & I logo */
+  content: "";
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  width: 26px; height: 26px;
+  background: url("assets/monogram.png") center / contain no-repeat;
 }
 .panel p { margin: 6px 0; }
 .heading { font-size: 56px; color: var(--wine); line-height: 1; }
@@ -143,7 +148,6 @@ body.locked { overflow: hidden; }
 
 #kira { background: var(--maroon) var(--tex-burgundy) center top / var(--tex-size); color: var(--gold-soft); }
 #kira .title { color: var(--gold); }
-#kira::before { background: transparent !important; }
 .countdown { display: flex; justify-content: center; gap: 12px; }
 .countdown div {
   width: 70px; padding: 12px 0;
@@ -214,12 +218,12 @@ body.locked { overflow: hidden; }
   text-align: left;
 }
 /* More than 3 wishes: box shows 3 (height set in script.js), drag to see the rest */
-.wishes.scrolling {
+.wishes.scrolling, .wishlist.scrolling {
   overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
   -webkit-mask-image: linear-gradient(#000 calc(100% - 36px), transparent);
           mask-image: linear-gradient(#000 calc(100% - 36px), transparent);
 }
-.wishes.scrolling.at-end { -webkit-mask-image: none; mask-image: none; }
+.wishes.scrolling.at-end, .wishlist.scrolling.at-end { -webkit-mask-image: none; mask-image: none; }
 .wish-hint {
   font-family: "Montserrat", sans-serif; font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
   color: var(--wine); opacity: .75; margin-top: 8px !important;
@@ -283,31 +287,36 @@ body.locked { overflow: hidden; }
   padding: 22px 18px; margin-top: 18px;
 }
 .gift-label { color: var(--wine); margin-bottom: 12px !important; font-size: 13px; }
-.qr {
-  display: block; width: 200px; height: 200px; object-fit: contain; margin: 0 auto 10px;
-  background: #fff; border-radius: 10px; padding: 8px; border: 1px solid rgba(110,33,40,.15);
-}
-.qr-placeholder {
-  width: 200px; height: 200px; margin: 0 auto 10px; border: 2px dashed rgba(110,33,40,.3); border-radius: 10px;
-  display: grid; place-items: center; font-style: italic; opacity: .7; padding: 16px;
-}
 .small-btn { padding: 9px 16px; font-size: 11px; margin: 6px 0; }
-.bank { font-weight: 600; font-size: 20px; color: var(--wine); margin-top: 14px !important; }
-.acc { font-family: "Montserrat", sans-serif; font-size: 18px; letter-spacing: .08em; }
-.wishlist { display: grid; gap: 10px; text-align: left; }
+.wl-intro { font-size: 14px; font-style: italic; opacity: .8; margin: -4px 0 12px !important; }
+.wishlist { display: grid; gap: 10px; text-align: left; padding: 2px; }
 .wl-item {
   display: flex; align-items: center; gap: 12px; padding: 10px 12px;
-  border-radius: 10px; background: var(--cream); text-decoration: none; color: var(--ink);
-  border: 1px solid transparent; transition: border-color .2s;
+  border-radius: 10px; background: var(--cream); color: var(--ink);
+  border: 1px solid transparent; transition: border-color .2s, opacity .2s;
 }
 .wl-item:hover { border-color: var(--gold); }
+.wl-check { position: relative; width: 26px; height: 26px; flex: none; cursor: pointer; }
+.wl-check input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.wl-check span {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 7px;
+  border: 1.5px solid var(--wine); background: #fffaf2; color: transparent; font-size: 16px; line-height: 1;
+}
+.wl-check input:checked + span { background: var(--wine); color: var(--cream); }
+.wl-check input:focus-visible + span { outline: 2px solid var(--gold); outline-offset: 2px; }
+.wl-check input:disabled { cursor: not-allowed; }
 .wl-item .wl-text { flex: 1; line-height: 1.25; }
 .wl-item b { display: block; font-weight: 600; color: var(--wine); }
-.wl-item small { opacity: .75; font-size: 13px; }
+.wl-item small { display: block; opacity: .75; font-size: 13px; }
+.wl-status { display: block; font-size: 12px; font-style: italic; color: var(--wine); margin-top: 2px; }
+.wl-status:empty { display: none; }
+.wl-item.taken { opacity: .55; }
+.wl-item.taken b { text-decoration: line-through; }
 .wl-item .wl-go {
   font-family: "Montserrat", sans-serif; font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
-  background: #ee4d2d; color: #fff; padding: 6px 10px; border-radius: 999px; white-space: nowrap;
+  background: #ee4d2d; color: #fff; padding: 6px 10px; border-radius: 999px; white-space: nowrap; text-decoration: none;
 }
+.wl-item.taken .wl-go { display: none; }
 .delivery { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(217,183,122,.5); }
 .delivery p { font-size: 15px; }
 
@@ -316,7 +325,6 @@ body.locked { overflow: hidden; }
   background: var(--maroon-2) var(--tex-burgundy) center top / var(--tex-size);
   color: var(--cream);
 }
-.panel + .contact-panel::before { background: transparent; }
 .contact-heading { font-size: 48px; line-height: 1.1; color: var(--cream); margin-bottom: 22px; }
 .contacts { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 26px 12px; }
 .contact-name { font-size: 32px; line-height: 1; color: var(--cream); margin: 0 !important; }
@@ -331,8 +339,9 @@ body.locked { overflow: hidden; }
 .contact-actions svg { width: 32px; height: 32px; }
 .thanks { font-size: 38px; color: var(--gold); margin-top: 40px !important; }
 
+.foot-logo { display: block; width: 130px; height: auto; margin: 0 auto 8px; }
 .foot {
-  text-align: center; padding: 20px 20px 84px; background: var(--maroon) var(--tex-burgundy) center top / var(--tex-size); color: var(--gold);
+  text-align: center; padding: 34px 20px 84px; background: var(--maroon) var(--tex-burgundy) center top / var(--tex-size); color: var(--gold);
   font-family: "Great Vibes", cursive; font-size: 26px;
 }
 
@@ -392,3 +401,34 @@ body.locked { overflow: hidden; }
 .sheet-close:hover { background: rgba(217,183,122,.15); }
 .sheet-body { padding: 22px 24px calc(28px + env(safe-area-inset-bottom)); }
 .sheet .rsvp-form { margin-top: 0; }
+
+/* Small English line under the Malay text */
+.en {
+  display: block;
+  font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; font-weight: 400;
+  text-transform: none; letter-spacing: .01em;
+  font-size: .82em; line-height: 1.3; opacity: .75; margin-top: 2px;
+}
+.caps .en, .title .en, .sched-item b .en { font-size: 14px; letter-spacing: .02em; }
+.script .en { font-size: 16px; margin-top: 4px; }
+.countdown .en { font-family: "Cormorant Garamond", Georgia, serif; text-transform: none; letter-spacing: .01em; font-size: 12px; margin-top: 0; }
+.contact-role .en { font-size: 13px; margin-top: 3px; }
+.frame .en { font-size: 13px; }
+
+/* RSVP already sent from this device */
+.rsvp-status { color: var(--wine); font-weight: 600; margin-top: 10px !important; }
+.rsvp-done { text-align: center; padding: 10px 4px 6px; }
+.rsvp-tick {
+  width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 28px;
+  background: var(--wine); color: var(--cream);
+}
+.rsvp-done-title { font-size: 22px; font-weight: 600; color: var(--wine); margin-bottom: 10px; }
+#rsvpDoneText { font-size: 18px; line-height: 1.4; margin-bottom: 14px; }
+.rsvp-done-note { font-size: 14px; font-style: italic; opacity: .8; }
+
+[hidden] { display: none !important; }  /* make sure hidden things stay hidden */
+
+/* Save to calendar: label above the Google / Apple buttons */
+.cal-label { width: 100%; font-family: "Montserrat", sans-serif; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--wine); margin-bottom: 2px !important; }
+.cal-label .en { letter-spacing: .02em; font-size: 14px; }

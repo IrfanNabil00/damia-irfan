@@ -2,6 +2,10 @@
   const C = window.CONFIG;
   const $ = (s) => document.querySelector(s);
   const DAYS = ["Ahad", "Isnin", "Selasa", "Rabu", "Khamis", "Jumaat", "Sabtu"];
+  const DAYS_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"];
+  const en = (t) => (t ? `<span class="en">${esc(t)}</span>` : "");
   const MONTHS = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai",
     "Ogos", "September", "Oktober", "November", "Disember"];
 
@@ -17,14 +21,40 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+  // Show only the first `shown` items of a list box; the rest are reached by
+  // dragging (scrolling) inside the box. Used for wishes and the wishlist.
+  function limitScroll(box, itemSel, shown, hint, hintText) {
+    const fit = () => {
+      const items = box.querySelectorAll(itemSel);
+      const scrolling = items.length > shown;
+      box.classList.toggle("scrolling", scrolling);
+      box.style.maxHeight = "";
+      if (hint) { hint.hidden = !scrolling; hint.textContent = hintText; }
+      if (!scrolling) return;
+      const last = items[shown - 1];
+      // Height up to the bottom of the last shown item, plus a peek of the next one.
+      box.style.maxHeight = `${last.offsetTop - box.offsetTop + last.offsetHeight + 28}px`;
+      box.scrollTop = 0;
+      fade();
+    };
+    const fade = () => box.classList.toggle("at-end", box.scrollTop + box.clientHeight >= box.scrollHeight - 4);
+    if (!box.dataset.limited) {
+      box.dataset.limited = "1";
+      box.addEventListener("scroll", fade, { passive: true });
+      window.addEventListener("resize", fit);
+      if (document.fonts) document.fonts.ready.then(fit);
+    }
+    fit();
+  }
+
   // ---------- Fill in details from config ----------
   document.querySelectorAll("[data-f]").forEach((el) => { el.textContent = C[el.dataset.f]; });
   document.title = `${C.brideShort} & ${C.groomShort} | Walimatul Urus`;
 
   const day = DAYS[d.getUTCDay()];
-  $("#coverDay").textContent = day;
+  $("#coverDay").innerHTML = esc(day) + en(DAYS_EN[d.getUTCDay()]);
   $("#coverDate").textContent = `${pad(d.getUTCDate())} | ${pad(d.getUTCMonth() + 1)} | ${d.getUTCFullYear()}`;
-  $("#invDay").textContent = day;
+  $("#invDay").innerHTML = esc(day) + en(DAYS_EN[d.getUTCDay()]);
   $("#invDate").textContent = fmtLong(C.date);
   try {
     // Hijri date computed automatically (Umm al-Qura calendar).
@@ -40,7 +70,7 @@
   $("#waze").href = `https://waze.com/ul?ll=${C.lat},${C.lng}&navigate=yes`;
 
   $("#schedule").innerHTML = C.schedule.map((s) =>
-    `<div class="sched-item reveal"><b>${esc(s.label)}</b>${esc(s.time)}</div>`).join("");
+    `<div class="sched-item reveal"><b>${esc(s.label)}${en(s.labelEn)}</b>${esc(s.time)}${en(s.timeEn)}</div>`).join("");
 
   const gcal = (dt) => dt.toISOString().replace(/[-:]|\.\d{3}/g, "");
   $("#calBtn").href = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
@@ -48,7 +78,26 @@
     `&dates=${gcal(eventStart)}/${gcal(eventEnd)}` +
     `&location=${encodeURIComponent(`${C.venueName}, ${C.venueAddress.join(" ")}`)}`;
 
+  // Apple Calendar (and Outlook): a small .ics calendar file the phone opens
+  // with "Add to Calendar". Includes a reminder one day before.
+  const icsText = (t) => String(t).replace(/[\\;,]/g, (c) => "\\" + c);
+  const ics = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Kad Kahwin//MS", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
+    `UID:walimatul-${C.date}-${C.brideShort}-${C.groomShort}@kad`.replace(/\s/g, ""),
+    `DTSTAMP:${gcal(new Date())}`,
+    `DTSTART:${gcal(eventStart)}`,
+    `DTEND:${gcal(eventEnd)}`,
+    `SUMMARY:${icsText(`Walimatul Urus ${C.brideShort} & ${C.groomShort}`)}`,
+    `LOCATION:${icsText(`${C.venueName}, ${C.venueAddress.join(" ")}`)}`,
+    `URL:${location.href.split("#")[0]}`,
+    "BEGIN:VALARM", "TRIGGER:-P1D", "ACTION:DISPLAY", `DESCRIPTION:${icsText(`Esok: Walimatul Urus ${C.brideShort} & ${C.groomShort}`)}`, "END:VALARM",
+    "END:VEVENT", "END:VCALENDAR",
+  ].join("\r\n");
+  $("#icsBtn").href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+
   $("#rsvpDeadline").textContent = fmtLong(C.rsvpDeadline);
+  const dl = new Date(`${C.rsvpDeadline}T12:00:00+08:00`);
+  $("#rsvpDeadlineEn").textContent = `${dl.getUTCDate()} ${MONTHS_EN[dl.getUTCMonth()]} ${dl.getUTCFullYear()}`;
 
   // ---------- RSVP form ----------
   const rsvpForm = $("#rsvpForm");
@@ -94,7 +143,7 @@
     const num = String(c.phone).replace(/\D/g, "");
     return `<div class="contact reveal">
       <p class="script contact-name">${esc(c.name)}</p>
-      <p class="contact-role">${esc(c.role || "")}</p>
+      <p class="contact-role">${esc(c.role || "")}${en(c.roleEn)}</p>
       <div class="contact-actions">
         <a href="tel:+${num}" aria-label="Telefon ${esc(c.name)}"><svg><use href="#i-call"/></svg></a>
         <a href="https://wa.me/${num}" target="_blank" rel="noopener" aria-label="WhatsApp ${esc(c.name)}"><svg><use href="#i-wa"/></svg></a>
@@ -184,31 +233,15 @@
       setTimeout(() => { giftMsg.textContent = ""; }, 2500);
     };
 
-    const qr = $("#qrImg");
-    if (G.qrImage) {
-      qr.src = G.qrImage;
-      $("#qrSave").href = G.qrImage;
-      qr.addEventListener("error", () => {
-        qr.outerHTML = '<div class="qr-placeholder">Letak gambar QR anda di site/assets/qr.png</div>';
-        $("#qrSave").remove();
-      });
-    } else { qr.remove(); $("#qrSave").remove(); }
-
-    if (G.accountNumber) {
-      $("#bankName").textContent = G.bankName;
-      $("#accNumber").textContent = G.accountNumber;
-      $("#accName").textContent = G.accountName;
-      $("#copyAcc").addEventListener("click", () =>
-        copy(G.accountNumber.replace(/\s/g, ""), "No. akaun"));
-    } else { ["#bankName", "#accNumber", "#accName", "#copyAcc"].forEach((s) => $(s).remove()); }
-    if (!G.qrImage && !G.accountNumber) $("#moneyGift").remove();
 
     const list = G.wishlist || [];
     $("#wishlist").innerHTML = list.map((w) =>
-      `<a class="wl-item" href="${esc(w.link)}" target="_blank" rel="noopener">
-        <span class="wl-text"><b>${esc(w.name)}</b>${w.note ? `<small>${esc(w.note)}</small>` : ""}</span>
-        <span class="wl-go">Beli</span>
-      </a>`).join("");
+      `<div class="wl-item" data-id="${esc(w.name)}">
+        <label class="wl-check" aria-label="Tandakan ${esc(w.name)}"><input type="checkbox"><span>✓</span></label>
+        <span class="wl-text"><b>${esc(w.name)}</b>${w.note ? `<small>${esc(w.note)}</small>` : ""}<em class="wl-status"></em></span>
+        ${w.link ? `<a class="wl-go" href="${esc(w.link)}" target="_blank" rel="noopener">Lihat</a>` : ""}
+      </div>`).join("");
+    limitScroll($("#wishlist"), ".wl-item", 3, $("#wlHint"), `↓ Tatal untuk lihat semua ${list.length} barang`);
     if (G.deliveryAddress) {
       const addr = [G.deliveryName, G.deliveryPhone, G.deliveryAddress].filter(Boolean);
       $("#deliveryText").innerHTML = addr.map(esc).join("<br>");
@@ -288,49 +321,28 @@
     $("#wishList").innerHTML = list.length
       ? list.map((w) => `<div class="wish"><p>"${esc(w.message)}"</p><p class="who">${esc(w.name)}</p></div>`).join("")
       : '<p class="muted">Jadilah yang pertama menghantar ucapan.</p>';
-    const hint = $("#wishHint");
-    hint.hidden = list.length <= WISHES_SHOWN;
-    hint.textContent = `↓ Tatal untuk lihat semua ${list.length} ucapan`;
-    fitWishes();
+    limitScroll(wishBox, ".wish", WISHES_SHOWN, $("#wishHint"), `↓ Tatal untuk lihat semua ${list.length} ucapan`);
   }
 
-  // Show only the first few wishes; the rest are reached by dragging inside the box.
   const WISHES_SHOWN = 3;
   const wishBox = $("#wishList");
-  function fitWishes() {
-    const items = wishBox.querySelectorAll(".wish");
-    const scrolling = items.length > WISHES_SHOWN;
-    wishBox.classList.toggle("scrolling", scrolling);
-    wishBox.style.maxHeight = "";
-    if (!scrolling) return;
-    const last = items[WISHES_SHOWN - 1];
-    // Height up to the bottom of the 3rd wish, plus a peek of the 4th so it's clear there's more.
-    wishBox.style.maxHeight = `${last.offsetTop - wishBox.offsetTop + last.offsetHeight + 28}px`;
-    wishBox.scrollTop = 0;
-    updateWishFade();
-  }
-  function updateWishFade() {
-    wishBox.classList.toggle("at-end", wishBox.scrollTop + wishBox.clientHeight >= wishBox.scrollHeight - 4);
-  }
-  wishBox.addEventListener("scroll", updateWishFade, { passive: true });
-  window.addEventListener("resize", fitWishes);
-  if (document.fonts) document.fonts.ready.then(fitWishes);
 
-  function wire(formSel, msgSel, type, okText) {
+  function wire(formSel, msgSel, type, okText, onOk) {
     const form = $(formSel);
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const btn = form.querySelector("button");
+      const btn = form.querySelector('button[type="submit"]');
       const msg = $(msgSel);
       btn.disabled = true;
       msg.textContent = "Menghantar…";
       try {
-        const res = await send(type, Object.fromEntries(new FormData(form)));
+        const data = Object.fromEntries(new FormData(form));
+        const res = await send(type, data);
         if (!res.ok) throw new Error(res.error || "failed");
         form.reset();
         msg.textContent = okText;
         if (type === "wish" && demo) loadWishes();
-        if (type === "rsvp") setTimeout(() => $("#rsvpDialog").close(), 2500);
+        if (onOk) onOk(data);
       } catch (err) {
         msg.textContent = "Maaf, ada masalah. Sila cuba lagi.";
       }
@@ -338,9 +350,142 @@
     });
   }
 
-  wire("#rsvpForm", "#rsvpMsg", "rsvp", "Terima kasih! Maklum balas anda telah diterima.");
+  // ---------- One RSVP per device ----------
+  // After a guest sends their RSVP, this phone remembers it. Next time they open
+  // the card they see what they sent instead of the form, so they can't send twice.
+  const RSVP_KEY = "kad-rsvp";
+  const savedRsvp = () => { try { return JSON.parse(localStorage.getItem(RSVP_KEY)); } catch (e) { return null; } };
+  function showRsvpDone() {
+    const r = savedRsvp();
+    if (!r) return;
+    const coming = r.attending !== "Tidak Hadir";
+    const pax = Number(r.pax) || 1;
+    $("#rsvpDoneText").innerHTML = coming
+      ? `<b>${esc(r.name)}</b> — Hadir, ${pax} orang${r.slot ? `<br>${esc(r.slot)}` : ""}` +
+        en(`Attending, ${pax} ${pax > 1 ? "people" : "person"}${r.slot ? " · " + r.slot : ""}`)
+      : `<b>${esc(r.name)}</b> — Tidak hadir${en("Not attending")}`;
+    $("#rsvpDone").hidden = false;
+    $("#rsvpForm").hidden = true;
+    $("#rsvpStatus").hidden = false;
+    document.querySelector('#rsvp [data-open-rsvp]').textContent = "Lihat RSVP Anda";
+  }
+
+  // Each device gets its own ID, sent with the RSVP. Sending again with the same
+  // ID updates that guest's row in the Sheet instead of adding a new one.
+  const rsvpIdBox = $("#rsvpId");
+  rsvpIdBox.defaultValue = (savedRsvp() && savedRsvp().id) ||
+    (window.crypto && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+
+  // "Change RSVP": reopen the form filled in with their previous answer.
+  $("#rsvpChange").addEventListener("click", () => {
+    const r = savedRsvp() || {};
+    rsvpForm.reset();
+    setTimeout(() => {
+      rsvpForm.elements.namedItem("name").value = r.name || "";
+      rsvpForm.elements.namedItem("phone").value = r.phone || "";
+      const att = rsvpForm.querySelector(`[name="attending"][value="${r.attending === "Tidak Hadir" ? "Tidak Hadir" : "Hadir"}"]`);
+      att.checked = true;
+      syncAttending();
+      if (r.pax) pax.value = Math.min(C.maxPax, Number(r.pax) || 1);
+      const slot = [...rsvpForm.querySelectorAll('[name="slot"]')].find((x) => x.value === r.slot);
+      if (slot) slot.checked = true;
+      $("#rsvpSubmit").textContent = "Kemas Kini RSVP / Update";
+      $("#rsvpMsg").textContent = "";
+      $("#rsvpDone").hidden = true;
+      rsvpForm.hidden = false;
+    });
+  });
+
+  wire("#rsvpForm", "#rsvpMsg", "rsvp", "Terima kasih! Maklum balas anda telah diterima.", (data) => {
+    $("#rsvpSubmit").textContent = "Sahkan RSVP / Confirm";
+    try { localStorage.setItem(RSVP_KEY, JSON.stringify({ ...data, at: new Date().toISOString() })); } catch (e) {}
+    showRsvpDone();
+    setTimeout(() => $("#rsvpDialog").close(), 3000);
+  });
+  showRsvpDone();
   wire("#wishForm", "#wishMsg", "wish", demo
     ? "Terima kasih atas ucapan anda!"
     : "Terima kasih! Ucapan anda akan dipaparkan selepas disemak.");
   loadWishes();
+
+  // ---------- Wishlist checklist (anonymous) ----------
+  // A tick means "someone is buying this". No names are stored. This browser
+  // remembers its own ticks so the same guest can untick if they change their mind.
+  const wl = $("#wishlist");
+  if (wl) {
+    const store = (key, val) => {
+      try {
+        if (val === undefined) return JSON.parse(localStorage.getItem(key)) || [];
+        localStorage.setItem(key, JSON.stringify(val));
+      } catch (e) { return []; }
+    };
+    const MINE = "kad-hajat-saya";
+    const DEMO_CLAIMS = "kad-demo-hajat";
+    const giftMsg = $("#giftMsg");
+    const say = (t) => { giftMsg.textContent = t; setTimeout(() => { if (giftMsg.textContent === t) giftMsg.textContent = ""; }, 3500); };
+
+    async function claimed() {
+      if (demo) return store(DEMO_CLAIMS);
+      return (await (await fetch(`${C.scriptUrl}?action=claimed`)).json()).claimed || [];
+    }
+    async function setClaim(item, on) {
+      if (demo) {
+        const list = store(DEMO_CLAIMS).filter((x) => x !== item);
+        if (on) list.push(item);
+        store(DEMO_CLAIMS, list);
+        return { ok: true };
+      }
+      const res = await fetch(C.scriptUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ type: on ? "claim" : "unclaim", item }),
+      });
+      return res.json();
+    }
+
+    function paint(taken) {
+      const mine = store(MINE);
+      wl.querySelectorAll(".wl-item").forEach((row) => {
+        const id = row.dataset.id;
+        const box = row.querySelector("input");
+        const isMine = mine.includes(id) && taken.includes(id);
+        const isTaken = taken.includes(id) && !isMine;
+        box.checked = isMine || isTaken;
+        box.disabled = isTaken;
+        row.classList.toggle("taken", isTaken);
+        row.querySelector(".wl-status").textContent =
+          isMine ? "Anda akan hadiahkan ini (tekan untuk batal)" : isTaken ? "Sudah ada yang akan hadiahkan" : "";
+      });
+    }
+
+    async function refresh() {
+      try { paint(await claimed()); } catch (e) { /* leave unticked if offline */ }
+    }
+
+    wl.addEventListener("change", async (e) => {
+      const box = e.target;
+      const row = box.closest(".wl-item");
+      const id = row.dataset.id;
+      const on = box.checked;
+      if (on && !confirm(`Tandakan "${id}" sebagai hadiah anda?\nNama anda tidak akan dipaparkan.`)) { box.checked = false; return; }
+      box.disabled = true;
+      try {
+        const res = await setClaim(id, on);
+        if (!res.ok) {
+          say(res.error === "taken" ? "Maaf, barang ini baru sahaja ditandakan oleh orang lain." : "Maaf, ada masalah. Sila cuba lagi.");
+        } else {
+          const mine = store(MINE).filter((x) => x !== id);
+          if (on) mine.push(id);
+          store(MINE, mine);
+          say(on ? "Terima kasih! Barang ini telah ditandakan." : "Tanda telah dibatalkan.");
+        }
+      } catch (err) {
+        say("Maaf, ada masalah. Sila cuba lagi.");
+      }
+      box.disabled = false;
+      refresh();
+    });
+
+    refresh();
+  }
 })();
