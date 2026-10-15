@@ -9,8 +9,8 @@
   --forest: #1f2a22;
   --card-w: 440px;
   /* Textures (site/assets). Burgundy = dark areas, paper = light areas. */
-  --tex-burgundy: url("assets/burgundy.jpg");
-  --tex-size: 400px auto; /* texture width on screen: smaller = finer grain, larger = bigger grain */
+  --tex-burgundy: url("assets/red-bg.webp");
+  --tex-size: 440px auto; /* red background width on screen: smaller = smaller vines, larger = bigger vines */
   --tex-paper: url("assets/paper.jpg");
 }
 
@@ -50,8 +50,8 @@ body.locked { overflow: hidden; }
 }
 .flap-left  { left: 0;  box-shadow: inset -1px 0 0 rgba(0,0,0,.35); }
 .flap-right { right: 0; box-shadow: inset 1px 0 0 rgba(255,255,255,.05); }
-.flap-left  { background-position: right -200px top; }  /* both flaps meet at the middle of the tile, so the grain lines up */
-.flap-right { background-position: left -200px top; }
+.flap-left  { background-position: right -220px top; }  /* both flaps meet at the middle of the image, so the pattern lines up */
+.flap-right { background-position: left -220px top; }
 .seal {
   position: relative; z-index: 2;
   width: 132px; height: 132px; border-radius: 50%;
@@ -91,38 +91,28 @@ body.locked { overflow: hidden; }
 
 /* Cover */
 .cover {
+  /* Painted cover (assets/cover.webp). The box keeps the image's shape so the
+     text always lines up with the oval frame drawn in the picture. */
   position: relative;
-  min-height: 100svh;
-  display: grid; place-items: center;
-  padding: 48px 24px;
-  background:
-    radial-gradient(ellipse at 20% 10%, rgba(70,85,59,.55), transparent 55%),
-    radial-gradient(ellipse at 85% 90%, rgba(70,85,59,.5), transparent 55%),
-    var(--forest);
+  aspect-ratio: 923 / 2000;
+  background: var(--forest) url("assets/cover.webp") center / cover no-repeat;
   overflow: hidden;
 }
-.rose { position: absolute; width: 200px; height: 200px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.4)); }
-.r1 { top: -40px; left: -50px; transform: rotate(-20deg); }
-.r2 { top: 18%; right: -70px; width: 170px; height: 170px; transform: rotate(40deg); }
-.r3 { bottom: 8%; left: -70px; width: 180px; height: 180px; transform: rotate(160deg); }
-.r4 { bottom: -50px; right: -40px; width: 220px; height: 220px; transform: rotate(200deg); }
 
+/* Text area = the inside of the gold oval in the picture (measured from the image). */
 .frame {
-  position: relative; z-index: 1;
-  width: min(300px, 82vw);
-  padding: 56px 24px;
+  position: absolute; z-index: 1;
+  left: 18.5%; right: 18.5%; top: 16.3%; bottom: 23.8%;
+  padding: 0 6% 0 4%;  /* nudged a little left, away from the bouquet on the right */
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center;
   color: var(--gold-soft);
-  background: var(--wine) var(--tex-burgundy) center top / var(--tex-size);
-  border-radius: 50% / 34%;
-  border: 2px solid var(--gold);
-  box-shadow: 0 0 0 6px var(--wine), 0 0 0 7px rgba(217,183,122,.55), 0 20px 40px rgba(0,0,0,.5);
 }
-.frame .names { font-size: 64px; line-height: .95; margin: 14px 0 18px; color: var(--cream); }
+.frame .names { font-size: 54px; line-height: .95; margin: 14px 0 18px; color: var(--cream); }
 .frame .names span { display: block; }
-.frame .names .amp { font-size: 40px; color: var(--gold); }
+.frame .names .amp { font-size: 34px; color: var(--gold); }
 .cover-date { font-family: "Montserrat", sans-serif; letter-spacing: .2em; font-size: 15px; margin: 4px 0 16px; }
-.venue-script { font-size: 26px; color: var(--cream); line-height: 1.1; }
+.venue-script { font-size: 22px; color: var(--cream); line-height: 1.1; max-width: 150px; text-wrap: balance; } /* keeps it clear of the bouquet */
 
 /* Panels */
 .panel {

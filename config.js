@@ -69,9 +69,9 @@ window.CONFIG = {
     ],
     // Address for wishlist deliveries (shown so guests can ship gifts directly).
     // Set to "" to hide.
-    deliveryAddress: "No. 1, Jalan Contoh 1/2, Taman Contoh, 43000 Kajang, Selangor",
-    deliveryName: "Nur Kartika Damia",
-    deliveryPhone: "012-345 6789",
+    deliveryAddress: "1, Jalan Meranti 7, Saujana Utama 2, 47000 Sg Buloh, Selangor",
+    deliveryName: "Muhammad Irfan Nabil",
+    deliveryPhone: "", // add a phone number for the courier, or leave "" to hide
   },
 
   // Google Apps Script Web App URL (see README.md, step 2).
