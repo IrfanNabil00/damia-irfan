@@ -219,7 +219,33 @@
     $("#wishList").innerHTML = list.length
       ? list.map((w) => `<div class="wish"><p>"${esc(w.message)}"</p><p class="who">${esc(w.name)}</p></div>`).join("")
       : '<p class="muted">Jadilah yang pertama menghantar ucapan.</p>';
+    const hint = $("#wishHint");
+    hint.hidden = list.length <= WISHES_SHOWN;
+    hint.textContent = `↓ Tatal untuk lihat semua ${list.length} ucapan`;
+    fitWishes();
   }
+
+  // Show only the first few wishes; the rest are reached by dragging inside the box.
+  const WISHES_SHOWN = 3;
+  const wishBox = $("#wishList");
+  function fitWishes() {
+    const items = wishBox.querySelectorAll(".wish");
+    const scrolling = items.length > WISHES_SHOWN;
+    wishBox.classList.toggle("scrolling", scrolling);
+    wishBox.style.maxHeight = "";
+    if (!scrolling) return;
+    const last = items[WISHES_SHOWN - 1];
+    // Height up to the bottom of the 3rd wish, plus a peek of the 4th so it's clear there's more.
+    wishBox.style.maxHeight = `${last.offsetTop - wishBox.offsetTop + last.offsetHeight + 28}px`;
+    wishBox.scrollTop = 0;
+    updateWishFade();
+  }
+  function updateWishFade() {
+    wishBox.classList.toggle("at-end", wishBox.scrollTop + wishBox.clientHeight >= wishBox.scrollHeight - 4);
+  }
+  wishBox.addEventListener("scroll", updateWishFade, { passive: true });
+  window.addEventListener("resize", fitWishes);
+  if (document.fonts) document.fonts.ready.then(fitWishes);
 
   function wire(formSel, msgSel, type, okText) {
     const form = $(formSel);

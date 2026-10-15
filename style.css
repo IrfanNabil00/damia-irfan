@@ -219,10 +219,21 @@ body.locked { overflow: hidden; }
 
 /* Wishes */
 .wishes {
-  max-height: 340px; overflow-y: auto;
   display: grid; gap: 10px; padding: 4px;
   text-align: left;
 }
+/* More than 3 wishes: box shows 3 (height set in script.js), drag to see the rest */
+.wishes.scrolling {
+  overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  -webkit-mask-image: linear-gradient(#000 calc(100% - 36px), transparent);
+          mask-image: linear-gradient(#000 calc(100% - 36px), transparent);
+}
+.wishes.scrolling.at-end { -webkit-mask-image: none; mask-image: none; }
+.wish-hint {
+  font-family: "Montserrat", sans-serif; font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--wine); opacity: .75; margin-top: 8px !important;
+}
+.wish-hint[hidden] { display: none; }
 .wish {
   background: #fffaf2; border-left: 3px solid var(--gold);
   padding: 10px 14px; border-radius: 8px;
