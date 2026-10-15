@@ -30,9 +30,12 @@ window.CONFIG = {
     "51200 Kuala Lumpur",
   ],
   venueShort: "KUALA LUMPUR",
-  // Coordinates used for Google Maps & Waze buttons
-  lat: 2.9935,
-  lng: 101.7874,
+  // Venue location for the Google Maps & Waze buttons
+  // (Rumah Abang Jamil KUALA LUMPUR, taken from its Google Maps listing).
+  lat: 3.1851992,
+  lng: 101.6814541,
+  // Opens the venue's own Google Maps page (name, photos, reviews, Directions).
+  googleMaps: "https://maps.google.com/?cid=18068563306614561673",
 
   // Programme (Atur Cara Majlis)
   schedule: [

@@ -66,8 +66,8 @@
   $("#hosts").innerHTML = C.hosts.map((fam) =>
     `<span class="family">${[].concat(fam).map(esc).join("<br>&amp;<br>")}</span>`).join("");
   $("#venueAddress").innerHTML = C.venueAddress.map(esc).join("<br>");
-  $("#gmaps").href = `https://www.google.com/maps/search/?api=1&query=${C.lat},${C.lng}`;
-  $("#waze").href = `https://waze.com/ul?ll=${C.lat},${C.lng}&navigate=yes`;
+  $("#gmaps").href = C.googleMaps || `https://www.google.com/maps/search/?api=1&query=${C.lat},${C.lng}`;
+  $("#waze").href = `https://waze.com/ul?ll=${C.lat},${C.lng}&q=${encodeURIComponent(C.venueName)}&navigate=yes`;
 
   $("#schedule").innerHTML = C.schedule.map((s) =>
     `<div class="sched-item reveal"><b>${esc(s.label)}${en(s.labelEn)}</b>${esc(s.time)}${en(s.timeEn)}</div>`).join("");
@@ -77,23 +77,6 @@
     `&text=${encodeURIComponent(`Walimatul Urus ${C.brideShort} & ${C.groomShort}`)}` +
     `&dates=${gcal(eventStart)}/${gcal(eventEnd)}` +
     `&location=${encodeURIComponent(`${C.venueName}, ${C.venueAddress.join(" ")}`)}`;
-
-  // Apple Calendar (and Outlook): a small .ics calendar file the phone opens
-  // with "Add to Calendar". Includes a reminder one day before.
-  const icsText = (t) => String(t).replace(/[\\;,]/g, (c) => "\\" + c);
-  const ics = [
-    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Kad Kahwin//MS", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
-    `UID:walimatul-${C.date}-${C.brideShort}-${C.groomShort}@kad`.replace(/\s/g, ""),
-    `DTSTAMP:${gcal(new Date())}`,
-    `DTSTART:${gcal(eventStart)}`,
-    `DTEND:${gcal(eventEnd)}`,
-    `SUMMARY:${icsText(`Walimatul Urus ${C.brideShort} & ${C.groomShort}`)}`,
-    `LOCATION:${icsText(`${C.venueName}, ${C.venueAddress.join(" ")}`)}`,
-    `URL:${location.href.split("#")[0]}`,
-    "BEGIN:VALARM", "TRIGGER:-P1D", "ACTION:DISPLAY", `DESCRIPTION:${icsText(`Esok: Walimatul Urus ${C.brideShort} & ${C.groomShort}`)}`, "END:VALARM",
-    "END:VEVENT", "END:VCALENDAR",
-  ].join("\r\n");
-  $("#icsBtn").href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
 
   $("#rsvpDeadline").textContent = fmtLong(C.rsvpDeadline);
   const dl = new Date(`${C.rsvpDeadline}T12:00:00+08:00`);
