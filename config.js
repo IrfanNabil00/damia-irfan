@@ -44,7 +44,7 @@ window.CONFIG = {
   ],
 
   // RSVP
-  rsvpDeadline: "2026-12-01",
+  rsvpDeadline: "2026-12-10",
   maxPax: 2, // max guests per RSVP
   // Time slots guests choose from. Use [] to skip the slot question.
   slots: ["11:00 AM - 2:00 PM", "2:00 PM - 4:00 PM"],
