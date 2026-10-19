@@ -72,16 +72,14 @@ window.CONFIG = {
     // and a Shopee (or any shop) link. Don't rename an item after guests have
     // ticked it — the tick is saved against the name.
     wishlist: [
-      { name: "Set Peralatan Bosch 108-in-1", note: "Bosch Household Tool Kit", link: "https://shopee.com.my/BOSCH-108-In-1-Multi-Function-Household-Tool-Kit-2607002788-i.12851682.772468267?extraParams=%7B%22display_model_id%22%3A40352982774%2C%22model_selection_logic%22%3A3%7D" },
-      { name: "TV PRISM Q55 Ultra 55 inci", note: "QLED 4K Google TV", link: "https://shopee.com.my/PRISM-Q55-Ultra-2026-Q-Ultra-Series-QLED-4K-AI-Google-TV-55-inch-TV-i.524628742.12499456780?extraParams=%7B%22display_model_id%22%3A59307755001%2C%22model_selection_logic%22%3A3%7D" },
-      { name: "Periuk Nasi", note: "Toshiba 5L Multi-Function", link: "https://shopee.com.my/TOSHIBA-5L-Multi-Function-Rice-Cooker-Easy-Cooking-Series-Non-Stick-Cooking-Pot-Mee-Pot-Cooker-Steamer-i.1177039009.45967833167?extraParams=%7B%22display_model_id%22%3A326508252084%2C%22model_selection_logic%22%3A3%7D" },
-      { name: "Cerek Elektrik", note: "1.7L", link: "https://shopee.com.my/" },
-      { name: "Pengisar (Blender)", note: "Panasonic", link: "https://shopee.com.my/" },
-      { name: "Set Pinggan Mangkuk", note: "Untuk 6 orang", link: "https://shopee.com.my/" },
-      { name: "Seterika Wap", note: "Philips", link: "https://shopee.com.my/" },
-      { name: "Penyedut Habuk", note: "Tanpa wayar", link: "https://shopee.com.my/" },
-      { name: "Set Tuala Mandi", note: "Warna krim", link: "https://shopee.com.my/" },
-      { name: "Mesin Kopi", note: "Kapsul", link: "https://shopee.com.my/" },
+      { name: "Bosch 108-in-1 Tool Kit", note: "Household tool set", link: "https://shopee.com.my/BOSCH-108-In-1-Multi-Function-Household-Tool-Kit-2607002788-i.12851682.772468267?extraParams=%7B%22display_model_id%22%3A40352982774%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Clothes Drying Rack", note: "Stainless steel, foldable", link: "https://shopee.com.my/304-Stainless-Steel-Clothes-Rack-Foldable-Mobility-Cloth-Drying-Rack-Suitable-for-Clothes-ShoesRak-Penyidai-Baju-Ampaian-i.159912769.27245104527?extraParams=%7B%22display_model_id%22%3A346105537178%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Rice Cooker", note: "Toshiba 5L", link: "https://shopee.com.my/TOSHIBA-5L-Multi-Function-Rice-Cooker-Easy-Cooking-Series-Non-Stick-Cooking-Pot-Mee-Pot-Cooker-Steamer-i.1177039009.45967833167?extraParams=%7B%22display_model_id%22%3A326508252084%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Cordless Vacuum", note: "PerySmith K2 Max II", link: "https://shopee.com.my/PerySmith-K2-Max-II-No.-1-Cordless-Vacuum-Cleaner-Xtreme-Series-(Mop-Bed-Brush-Wet-Dry-Vacum-Cleaner-Kaden)-i.130925376.6339518885?extraParams=%7B%22display_model_id%22%3A160670925152%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Blender", note: "Philips 700W", link: "https://shopee.com.my/Philips-700W-Blender-ProBlend-Crush-Technology-HR2221-01-HR2221-i.49743442.5937845503?extraParams=%7B%22display_model_id%22%3A50582516649%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Dinnerware Set", note: "24-piece porcelain", link: "https://shopee.com.my/Mysteryhero24PCS-Porcelain-Bohemia-Glassware-Dinnerware-Dinner-Set-Pinggan-Cawan-Kaca-Set-Raya-Opal-Kaca-Ceramic-Keramik-i.14958642.54517608837?extraParams=%7B%22display_model_id%22%3A406491246685%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Cordless Spin Scrubber", note: "HOTO, waterproof", link: "https://shopee.com.my/HOTO-Cordless-Electric-Spin-Scrubber-Brush-IPX7-Waterproof-Bathroom-Cleaning-Rechargeable-USB-C-i.1381482809.28014138498?extraParams=%7B%22display_model_id%22%3A99664425413%2C%22model_selection_logic%22%3A3%7D" },
+      { name: "Surge Protector", note: "Belkin 4-outlet, twin pack", link: "https://shopee.com.my/BELKIN-BSV400AF2M-4-OUTLET-2M-SURGE-PROTECTION-SINGLE-PACK-TWIN-PACK-i.20108462.45802850123?extraParams=%7B%22display_model_id%22%3A440272325144%2C%22model_selection_logic%22%3A3%7D" },
     ],
     // Address for wishlist deliveries (shown so guests can ship gifts directly).
     // Set to "" to hide.
