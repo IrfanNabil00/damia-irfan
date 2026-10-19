@@ -275,9 +275,17 @@
   setInterval(tick, 1000);
 
   // ---------- Scroll reveal ----------
+  // Sections fade in the first time they scroll into view. The cover (main page)
+  // replays its fade-in every time the guest scrolls back up to it.
+  const replays = (el) => !!el.closest(".cover");
   const io = new IntersectionObserver((entries) => entries.forEach((e) => {
-    if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-  }), { threshold: 0.15 });
+    if (e.intersectionRatio >= 0.15) {
+      e.target.classList.add("in");
+      if (!replays(e.target)) io.unobserve(e.target);
+    } else if (!e.isIntersecting && replays(e.target)) {
+      e.target.classList.remove("in");  // fully off screen: ready to play again
+    }
+  }), { threshold: [0, 0.15] });
   document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
   // ---------- Backend (Google Apps Script, or demo mode) ----------
