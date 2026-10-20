@@ -65,6 +65,9 @@ window.CONFIG = {
   // HIDDEN for now — to show the gallery, delete "[], // " on the next line.
   gallery: [], // [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => `assets/gallery/${n}.jpg`),
 
+  // Show the Hadiah (gifts) section? Set to true to bring it back.
+  showGifts: false,
+
   // Gifts (Hadiah) — wishlist checklist and delivery address.
   gift: {
     // Wishlist checklist: guests tick an item they will buy (anonymously),

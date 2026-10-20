@@ -215,7 +215,7 @@
 
   // ---------- Gifts ----------
   const G = C.gift;
-  if (!G) {
+  if (!G || C.showGifts === false) {
     $("#hadiah").remove();
     document.querySelector('.bottom-nav a[href="#hadiah"]').remove();
   } else {
