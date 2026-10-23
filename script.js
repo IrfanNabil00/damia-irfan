@@ -342,7 +342,7 @@
         if (!res.ok) throw new Error(res.error || "failed");
         form.reset();
         msg.textContent = okText;
-        if (type === "wish" && demo) loadWishes();
+        if (type === "wish") loadWishes();
         if (onOk) onOk(data);
       } catch (err) {
         msg.textContent = "Maaf, ada masalah. Sila cuba lagi.";
@@ -406,7 +406,7 @@
   showRsvpDone();
   wire("#wishForm", "#wishMsg", "wish", demo
     ? "Terima kasih atas ucapan anda!"
-    : "Terima kasih! Ucapan anda akan dipaparkan selepas disemak.");
+    : "Terima kasih atas ucapan anda!");
   loadWishes();
 
   // ---------- Wishlist checklist (anonymous) ----------
