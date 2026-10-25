@@ -105,9 +105,17 @@
       `<label><input type="radio" name="slot" value="${esc(sl)}" required><span>${esc(sl)}</span></label>`).join("");
   } else { $("#slotQ").remove(); }
 
-  rsvpForm.querySelectorAll("[data-step]").forEach((b) => b.addEventListener("click", () => {
-    pax.value = Math.min(C.maxPax, Math.max(1, Number(pax.value) + Number(b.dataset.step)));
-  }));
+  // Guests type the number of people (1 to maxPax).
+  const paxMsg = () => {
+    const n = Number(pax.value);
+    pax.setCustomValidity(!pax.value || n < 1 || n > C.maxPax || !Number.isInteger(n)
+      ? `Sila masukkan 1 hingga ${C.maxPax} orang / Please enter 1 to ${C.maxPax} people` : "");
+  };
+  pax.addEventListener("input", paxMsg);
+  pax.addEventListener("blur", () => {
+    if (pax.value) pax.value = Math.min(C.maxPax, Math.max(1, Math.round(Number(pax.value)) || 1));
+    paxMsg();
+  });
 
   // Hide (and disable, so they're not required or sent) the pax & slot
   // questions when the guest answers "No".
@@ -117,7 +125,7 @@
     attendBox.querySelectorAll("input").forEach((i) => { i.disabled = no; });
   };
   rsvpForm.querySelectorAll('[name="attending"]').forEach((r) => r.addEventListener("change", syncAttending));
-  rsvpForm.addEventListener("reset", () => setTimeout(syncAttending));
+  rsvpForm.addEventListener("reset", () => setTimeout(() => { syncAttending(); paxMsg(); }));
 
   // RSVP opens as a popup from the RSVP section button and the bottom menu.
   const dlg = $("#rsvpDialog");
